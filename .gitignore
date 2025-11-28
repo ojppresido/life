@@ -12,6 +12,9 @@
 # Editors
 .vscode/
 .idea/
+*.swp
+*.swo
+*.tmp
 
 # Dependencies
 node_modules/

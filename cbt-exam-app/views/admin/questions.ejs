@@ -1,0 +1,70 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Manage Questions</h2>
+            <div>
+                <span class="me-3">Welcome, <%= admin.username %>!</span>
+                <a href="/admin/logout" class="btn btn-outline-danger">Logout</a>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="/admin/questions/add" class="btn btn-success">Add New Question</a>
+            <p class="mb-0"><%= questions.length %> questions in the database</p>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Question</th>
+                        <th>Difficulty</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% questions.forEach(question => { %>
+                        <tr>
+                            <td><%= question.id %></td>
+                            <td><span class="badge bg-secondary"><%= question.subject %></span></td>
+                            <td><%= question.questionText.substring(0, 60) %><% if(question.questionText.length > 60) { %>...<% } %></td>
+                            <td>
+                                <% if(question.difficulty === 'easy') { %>
+                                    <span class="badge bg-success"><%= question.difficulty %></span>
+                                <% } else if(question.difficulty === 'medium') { %>
+                                    <span class="badge bg-warning text-dark"><%= question.difficulty %></span>
+                                <% } else { %>
+                                    <span class="badge bg-danger"><%= question.difficulty %></span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <a href="/admin/questions/<%= question.id %>/edit" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <form action="/admin/questions/<%= question.id %>" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this question?');">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Handle the form method override for delete
+    document.querySelectorAll('form[method="POST"]').forEach(form => {
+        const methodInput = form.querySelector('input[name="_method"]');
+        if (methodInput && methodInput.value === 'DELETE') {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to delete this question?')) {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
+</script>

@@ -1,0 +1,77 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Exam Results</h3>
+            </div>
+            <div class="card-body text-center">
+                <h4>Your Score: <%= results.score %> / <%= results.total %></h4>
+                <div class="progress mb-3" style="height: 30px;">
+                    <div class="progress-bar 
+                        <% if(results.percentage >= 70) { %>bg-success
+                        <% } else if(results.percentage >= 50) { %>bg-warning
+                        <% } else { %>bg-danger
+                        <% } %>" 
+                        role="progressbar" 
+                        style="width: <%= results.percentage %>%;">
+                        <%= results.percentage %>%
+                    </div>
+                </div>
+                <p class="lead">
+                    <% if(results.percentage >= 70) { %>
+                        Excellent! Well done!
+                    <% } else if(results.percentage >= 50) { %>
+                        Good effort! Keep practicing.
+                    <% } else { %>
+                        Keep studying and try again.
+                    <% } %>
+                </p>
+            </div>
+        </div>
+        
+        <h4>Question Review</h4>
+        <% results.results.forEach((result, index) => { %>
+            <div class="card mb-3 
+                <% if(result.isCorrect) { %>border-success
+                <% } else { %>border-danger
+                <% } %>">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Question <%= index + 1 %></h5>
+                    <span class="badge 
+                        <% if(result.isCorrect) { %>bg-success
+                        <% } else { %>bg-danger
+                        <% } %>">
+                        <% if(result.isCorrect) { %>Correct
+                        <% } else { %>Incorrect
+                        <% } %>
+                    </span>
+                </div>
+                <div class="card-body">
+                    <h6><%= result.question.questionText %></h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Your Answer:</strong> 
+                                <% if(result.userAnswer) { %>
+                                    <%= result.question.options.find(opt => opt.id === result.userAnswer).text %>
+                                <% } else { %>
+                                    <span class="text-muted">No answer provided</span>
+                                <% } %>
+                            </p>
+                            <p><strong>Correct Answer:</strong> <%= result.question.options.find(opt => opt.id === result.correctAnswer).text %></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Explanation:</strong></p>
+                            <p class="text-muted"><%= result.explanation %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+        
+        <div class="text-center">
+            <a href="/start-exam" class="btn btn-primary">Take Another Exam</a>
+            <a href="/" class="btn btn-secondary">Go Home</a>
+        </div>
+    </div>
+</div>

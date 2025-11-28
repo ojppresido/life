@@ -1,52 +1,39 @@
 ```
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+
 # Dependencies
 node_modules/
-
-# Environment
+venv/
+.venv/
 .env
 .env.local
-.env.*
+*.env.*
 
-# Logs
+# Logs and temp files
 *.log
+*.tmp
+*.swp
 
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Build artifacts
-dist/
-build/
-target/
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# IDE
+# Editors
 .vscode/
 .idea/
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# Coverage directory used by tools like istanbul
+# Coverage
 coverage/
-*.lcov
+htmlcov/
+.coverage
 
-# Temporary folders
-tmp/
-temp/
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
 
-# Package manager
-package-lock.json
-
-# System
+# OS generated files
 .DS_Store
 Thumbs.db
 ```

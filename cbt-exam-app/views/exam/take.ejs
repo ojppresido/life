@@ -1,39 +1,48 @@
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Exam: <%= subject %></h3>
-            <div class="alert alert-info">
-                Time Remaining: <span id="timer">00:00</span>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="page-title">Exam: <%= subject %></h3>
+                <div class="alert alert-info d-flex align-items-center">
+                    <i class="fas fa-clock me-2"></i>
+                    Time Remaining: <span id="timer" class="timer-display">00:00</span>
+                </div>
             </div>
-        </div>
-        
-        <form id="examForm" action="/submit-exam" method="POST">
-            <% questions.forEach((question, index) => { %>
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0">Question <%= index + 1 %> of <%= questions.length %></h5>
-                    </div>
-                    <div class="card-body">
-                        <h6 class="card-title"><%= question.questionText %></h6>
-                        <div class="form-check mb-2">
-                            <% question.options.forEach(option => { %>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="answers[<%= question.id %>]" id="q<%= question.id %>_<%= option.id %>" value="<%= option.id %>">
-                                    <label class="form-check-label" for="q<%= question.id %>_<%= option.id %>">
-                                        <%= option.text %>
-                                    </label>
-                                </div>
-                            <% }); %>
+            
+            <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" style="width: <%= (0 / questions.length) * 100 %>%;" id="progressBar"></div>
+            </div>
+            
+            <form id="examForm" action="/submit-exam" method="POST">
+                <% questions.forEach((question, index) => { %>
+                    <div class="card exam-question mb-4" id="question-<%= index + 1 %>">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Question <%= index + 1 %> of <%= questions.length %></h5>
+                            <span class="badge bg-secondary">ID: <%= question.id %></span>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-title"><%= question.questionText %></h6>
+                            <div class="row">
+                                <% question.options.forEach((option, optIndex) => { %>
+                                    <div class="col-md-6 mb-2">
+                                        <label class="option-container" for="q<%= question.id %>_<%= option.id %>">
+                                            <input class="form-check-input" type="radio" name="answers[<%= question.id %>]" id="q<%= question.id %>_<%= option.id %>" value="<%= option.id %>" required style="display: none;">
+                                            <span class="option-letter"><%= String.fromCharCode(65 + optIndex) %></span>
+                                            <span class="option-text"><%= option.text %></span>
+                                        </label>
+                                    </div>
+                                <% }); %>
+                            </div>
                         </div>
                     </div>
+                <% }); %>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="/" class="btn btn-secondary me-md-2">Cancel Exam</a>
+                    <button type="submit" class="btn btn-success btn-lg">Submit Exam</button>
                 </div>
-            <% }); %>
-            
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-success btn-lg">Submit Exam</button>
-                <a href="/" class="btn btn-secondary">Cancel Exam</a>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -41,6 +50,26 @@
     // Timer functionality
     let timeRemaining = <%= timeRemaining %>;
     const timerElement = document.getElementById('timer');
+    const progressBar = document.getElementById('progressBar');
+    
+    // Calculate progress
+    const totalQuestions = <%= questions.length %>;
+    let answeredQuestions = 0;
+    
+    // Update progress bar as user answers questions
+    document.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.addEventListener('change', function() {
+            // Count how many questions have been answered
+            const answered = new Set();
+            document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+                const questionId = radio.name.match(/\[(.*?)\]/)[1];
+                answered.add(questionId);
+            });
+            answeredQuestions = answered.size;
+            const progress = (answeredQuestions / totalQuestions) * 100;
+            progressBar.style.width = progress + '%';
+        });
+    });
     
     function updateTimer() {
         const minutes = Math.floor(timeRemaining / 60);
@@ -64,5 +93,28 @@
     window.addEventListener('beforeunload', function(e) {
         e.preventDefault();
         e.returnValue = 'Are you sure you want to leave the exam? Your progress will be lost.';
+    });
+    
+    // Add keyboard shortcuts for navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.ctrlKey) {
+            document.getElementById('examForm').submit();
+        }
+    });
+    
+    // Add event listeners to option containers for visual feedback
+    document.querySelectorAll('.option-container').forEach(container => {
+        container.addEventListener('click', function() {
+            // Remove selected class from siblings
+            const siblings = Array.from(this.parentElement.parentElement.children);
+            siblings.forEach(sibling => {
+                const label = sibling.querySelector('.option-container');
+                if (label) {
+                    label.classList.remove('selected');
+                }
+            });
+            // Add selected class to clicked container
+            this.classList.add('selected');
+        });
     });
 </script>

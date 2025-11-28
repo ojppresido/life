@@ -1,0 +1,28 @@
+{
+  "name": "cbt-exam-system",
+  "version": "1.0.0",
+  "description": "A Computer-Based Testing (CBT) system for secondary school exams",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "cbt",
+    "exam",
+    "education",
+    "testing",
+    "school"
+  ],
+  "author": "CBT Exam System",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "ejs": "^3.1.9",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
